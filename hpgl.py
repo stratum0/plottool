@@ -74,8 +74,10 @@ def hpgl_cutto2(match):
 def hpgl_init(match):
 	return HPGL_INIT, None
 
+
 def hpgl_pen_absolute(match):
 	return HPGL_PEN_ABSOLUTE, None
+
 
 def hpgl_select_pen(match):
 	pen = int(match.group(1))
@@ -212,7 +214,6 @@ class HPGL:
 			new_path = []
 			new_path.append(path[0])
 			for prev, cur, next in zip(path[:-2], path[1:-1], path[2:]):
-				print(prev,cur,next)
 				angle = vecAngle(prev, cur, next)
 				if angle < math.pi / 1.1:
 					d2 = vecDist(cur, next)
@@ -410,7 +411,6 @@ class HPGL:
 		for i in range(m - 1):
 			self.move(x + deltaHPGL, 0)
 			self.routes = original + self.routes
-			
 
 	def multiplyY(self, delta, m=2):
 		if m < 2:

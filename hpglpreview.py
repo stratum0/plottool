@@ -70,7 +70,6 @@ class HPGLPreview(wx.Frame):
 
 	def OnClose(self, event):
 		self.eventLoop.Exit()
-		
 
 	def ShowModal(self):
 		self.MakeModal()

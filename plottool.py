@@ -93,7 +93,7 @@ print(" -> Total movement: {:.1f} cm".format(movement / 10))
 if args.preview:
 	import hpglpreview
 	import wx
-	app = wx.App(False)	
+	app = wx.App(False)
 	dialog = hpglpreview.HPGLPreview(HPGLinput, dialog=True)
 	if not dialog.ShowModal():
 		exit(1)
