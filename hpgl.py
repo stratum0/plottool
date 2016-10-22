@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import division
+from __future__ import print_function
 import re
 import math
 
@@ -176,7 +177,7 @@ class HPGL:
 					matched = True
 					break
 			if not matched:
-				print repr(command)
+				print(repr(command))
 		if path:
 			if len(path) > 1:
 				routes.append(path)
@@ -211,7 +212,7 @@ class HPGL:
 			new_path = []
 			new_path.append(path[0])
 			for prev, cur, next in zip(path[:-2], path[1:-1], path[2:]):
-				print prev,cur,next
+				print(prev,cur,next)
 				angle = vecAngle(prev, cur, next)
 				if angle < math.pi / 1.1:
 					d2 = vecDist(cur, next)
