@@ -4,6 +4,12 @@ from __future__ import print_function
 import re
 import math
 
+# define xrange, to be compatible with python3 and python2
+try:
+	xrange
+except NameError:
+	xrange = range
+
 HPGL_GOTO = "PU%s,%s;"
 HPGL_CUTTO = "PD%s,%s;"
 HPGL_CUTTO_STR = "PD%s;"
@@ -314,7 +320,7 @@ class HPGL:
 		self.routes = routes
 
 	def operateXY(self, fn):
-		self.operate(lambda path: map(lambda xy: fn(xy[0], xy[1]), path))
+		self.operate(lambda path: list(map(lambda xy: fn(xy[0], xy[1]), path)))
 
 	def move(self, xoffset, yoffset):
 		self.operateXY(lambda x, y: (x + xoffset, y + yoffset))
@@ -388,7 +394,7 @@ class HPGL:
 
 	def getSize(self):
 		_, max_xy = self.getBoundingBox()
-		return map(hpgl2mm, max_xy)
+		return tuple(map(hpgl2mm, max_xy))
 
 	def getLength(self):
 		movement = 0
@@ -408,7 +414,7 @@ class HPGL:
 		original = self.getPaths()
 		min_xy, max_xy = self.getBoundingBox()
 		x, y = max_xy
-		for i in range(m - 1):
+		for i in xrange(m - 1):
 			self.move(x + deltaHPGL, 0)
 			self.routes = original + self.routes
 
@@ -419,7 +425,7 @@ class HPGL:
 		original = self.getPaths()
 		min_xy, max_xy = self.getBoundingBox()
 		x, y = max_xy
-		for i in range(m - 1):
+		for i in xrange(m - 1):
 			self.move(0, y + deltaHPGL)
 			self.routes = original + self.routes
 
@@ -428,7 +434,7 @@ class HPGL:
 		hpgl += HPGL_PEN_ABSOLUTE
 		for route in self.routes:
 			first = True
-			route = map(lambda a: tuple(map(lambda b: int(round(b, 0)), a)), route)
+			route = tuple(map(lambda a: tuple(map(lambda b: int(round(b, 0)), a)), route))
 			goto = route[0]
 			route = ",".join(map(lambda a: "%d,%d" % a, route[1:]))
 			hpgl += HPGL_GOTO % goto
