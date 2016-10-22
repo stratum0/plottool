@@ -498,11 +498,56 @@ if __name__ == "__main__":
 	parser.add_argument("file", type=str, help="the HPGL-file to edit")
 	parser.add_argument("-p", "--preview", type=str, help="Generate SVG preview file", metavar="SVG")
 	parser.add_argument("-o", "--output", type=str, help="Output HPGL file", metavar="HPGL")
+	parser.add_argument("-m", "--magic", action="store_true", help="Enable auto-optimize")
+	parser.add_argument("-w", "--width", metavar="WIDTH", type=int, help="Scale to width in mm")
+	parser.add_argument("--mirror", action="store_true", help="Mirror on X-axis for inverted cuts (T-Shirts etc.)")
+	parser.add_argument("--pen", action="store_true", help="Disable cut optimization for rotating knifes")
 	args = parser.parse_args()
 
-	hpgl = HPGL(args.file)
+	HPGLinput = HPGL(args.file)
+
+	# do optimize stuff:
+	blade_optimize = False
+	optimize = False
+	reroute = False
+	rotate180 = False
+	mirror = False
+	margin = 5
+
+	if args.mirror:
+		mirror = True
+
+	if args.magic:
+		blade_optimize = True
+		reroute = True
+		optimize = True
+		rotate180 = True
+
+	if args.width is not None:
+		HPGLinput.scaleToWidth(args.width)
+
+	if args.pen:
+		blade_optimize = False
+
+	if rotate180:
+		HPGLinput.mirrorX()
+		HPGLinput.mirrorY()
+
+	if mirror:
+		HPGLinput.mirrorX()
+
+	if optimize:
+		HPGLinput.optimize()
+		HPGLinput.fit()
+
+	if blade_optimize:
+		HPGLinput.optimizeCut(0.25)
+		HPGLinput.bladeOffset(0.25)
+
+	if reroute:
+		HPGLinput.rerouteXY()
 
 	if args.preview is not None:
-		hpgl.exportSVG(args.preview)
+		HPGLinput.exportSVG(args.preview)
 	if args.output is not None:
-		hpgl.exportHPGL(args.output)
+		HPGLinput.exportHPGL(args.output)
