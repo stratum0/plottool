@@ -33,7 +33,8 @@ try:
 	HPGLinput = HPGL(args.file)
 except:
 	print("no/wrong/empty file given in argument.")
-	exit(128)
+	print("")
+	raise
 
 
 # do optimize stuff:
