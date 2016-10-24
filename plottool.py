@@ -29,11 +29,6 @@ parser.add_argument("--pen", action="store_true", help="Disable cut optimization
 parser.add_argument("file", type=str, help="the HPGL-file you want to plot")
 args = parser.parse_args()
 
-if not os.path.exists(args.port):
-	print("The port {} does not exist.".format(args.port))
-	exit(1)
-
-print("Using port: {}".format(args.port))
 try:
 	HPGLinput = HPGL(args.file)
 except:
@@ -103,6 +98,11 @@ except KeyboardInterrupt:
 	exit(0)
 if cont != "y":
 	exit(0)
+
+print("Using port: {}".format(args.port))
+if not os.path.exists(args.port):
+	print("The port {} does not exist.".format(args.port))
+	exit(1)
 
 HPGLdata = HPGLinput.getHPGL()
 print("{} characters loaded".format(len(HPGLdata)))
