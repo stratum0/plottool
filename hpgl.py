@@ -73,7 +73,7 @@ def hpgl_cutto(match):
 
 def hpgl_cutto2(match):
 	coords = list(map(int, match.groups()[0].split(",")))
-	xy = zip(coords[0::2], coords[1::2])
+	xy = list(zip(coords[0::2], coords[1::2]))
 	return HPGL_CUTTO, xy
 
 
