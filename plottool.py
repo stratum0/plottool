@@ -85,15 +85,17 @@ print(" -> Total area:     {area:.1f} cm^2".format(area=w / 10 * h / 10))
 movement = sum(HPGLinput.getLength())
 print(" -> Total movement: {:.1f} cm".format(movement / 10))
 
-if args.preview:
-	import hpglpreview
-	import wx
-	app = wx.App(False)	
-	dialog = hpglpreview.HPGLPreview(HPGLinput, dialog=True)
-	if not dialog.ShowModal():
-		exit(1)
 try:
-	cont = input("continue? (y/n) ")
+	if args.preview:
+		import hpglpreview
+		import wx
+		app = wx.App(False)
+		dialog = hpglpreview.HPGLPreview(HPGLinput, dialog=True)
+		if not dialog.ShowModal():
+			exit(1)
+		cont = 'y'
+	else:
+		cont = input("continue? (y/n) ")
 except KeyboardInterrupt:
 	exit(0)
 if cont != "y":
