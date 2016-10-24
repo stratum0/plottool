@@ -70,10 +70,10 @@ class HPGLPreview(wx.Frame):
 
 	def OnClose(self, event):
 		self.eventLoop.Exit()
-		
 
 	def ShowModal(self):
-		self.MakeModal()
+		if hasattr(self, "MakeModal"):
+			self.MakeModal()
 		self.Show()
 		self.Canvas.Canvas.ZoomToBB()
 

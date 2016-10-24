@@ -4,6 +4,12 @@ from __future__ import print_function
 import re
 import math
 
+# define xrange, to be compatible with python3 and python2
+try:
+	xrange
+except NameError:
+	xrange = range
+
 HPGL_GOTO = "PU%s,%s;"
 HPGL_CUTTO = "PD%s,%s;"
 HPGL_CUTTO_STR = "PD%s;"
@@ -66,7 +72,7 @@ def hpgl_cutto(match):
 
 
 def hpgl_cutto2(match):
-	coords = map(int, match.groups()[0].split(","))
+	coords = list(map(int, match.groups()[0].split(",")))
 	xy = zip(coords[0::2], coords[1::2])
 	return HPGL_CUTTO, xy
 
@@ -74,8 +80,10 @@ def hpgl_cutto2(match):
 def hpgl_init(match):
 	return HPGL_INIT, None
 
+
 def hpgl_pen_absolute(match):
 	return HPGL_PEN_ABSOLUTE, None
+
 
 def hpgl_select_pen(match):
 	pen = int(match.group(1))
@@ -212,7 +220,6 @@ class HPGL:
 			new_path = []
 			new_path.append(path[0])
 			for prev, cur, next in zip(path[:-2], path[1:-1], path[2:]):
-				print(prev,cur,next)
 				angle = vecAngle(prev, cur, next)
 				if angle < math.pi / 1.1:
 					d2 = vecDist(cur, next)
@@ -313,7 +320,7 @@ class HPGL:
 		self.routes = routes
 
 	def operateXY(self, fn):
-		self.operate(lambda path: map(lambda xy: fn(xy[0], xy[1]), path))
+		self.operate(lambda path: list(map(lambda xy: fn(xy[0], xy[1]), path)))
 
 	def move(self, xoffset, yoffset):
 		self.operateXY(lambda x, y: (x + xoffset, y + yoffset))
@@ -387,7 +394,7 @@ class HPGL:
 
 	def getSize(self):
 		_, max_xy = self.getBoundingBox()
-		return map(hpgl2mm, max_xy)
+		return tuple(map(hpgl2mm, max_xy))
 
 	def getLength(self):
 		movement = 0
@@ -407,10 +414,9 @@ class HPGL:
 		original = self.getPaths()
 		min_xy, max_xy = self.getBoundingBox()
 		x, y = max_xy
-		for i in range(m - 1):
+		for i in xrange(m - 1):
 			self.move(x + deltaHPGL, 0)
 			self.routes = original + self.routes
-			
 
 	def multiplyY(self, delta, m=2):
 		if m < 2:
@@ -419,7 +425,7 @@ class HPGL:
 		original = self.getPaths()
 		min_xy, max_xy = self.getBoundingBox()
 		x, y = max_xy
-		for i in range(m - 1):
+		for i in xrange(m - 1):
 			self.move(0, y + deltaHPGL)
 			self.routes = original + self.routes
 
@@ -428,7 +434,7 @@ class HPGL:
 		hpgl += HPGL_PEN_ABSOLUTE
 		for route in self.routes:
 			first = True
-			route = map(lambda a: tuple(map(lambda b: int(round(b, 0)), a)), route)
+			route = tuple(map(lambda a: tuple(map(lambda b: int(round(b, 0)), a)), route))
 			goto = route[0]
 			route = ",".join(map(lambda a: "%d,%d" % a, route[1:]))
 			hpgl += HPGL_GOTO % goto
@@ -498,11 +504,56 @@ if __name__ == "__main__":
 	parser.add_argument("file", type=str, help="the HPGL-file to edit")
 	parser.add_argument("-p", "--preview", type=str, help="Generate SVG preview file", metavar="SVG")
 	parser.add_argument("-o", "--output", type=str, help="Output HPGL file", metavar="HPGL")
+	parser.add_argument("-m", "--magic", action="store_true", help="Enable auto-optimize")
+	parser.add_argument("-w", "--width", metavar="WIDTH", type=int, help="Scale to width in mm")
+	parser.add_argument("--mirror", action="store_true", help="Mirror on X-axis for inverted cuts (T-Shirts etc.)")
+	parser.add_argument("--pen", action="store_true", help="Disable cut optimization for rotating knifes")
 	args = parser.parse_args()
 
-	hpgl = HPGL(args.file)
+	HPGLinput = HPGL(args.file)
+
+	# do optimize stuff:
+	blade_optimize = False
+	optimize = False
+	reroute = False
+	rotate180 = False
+	mirror = False
+	margin = 5
+
+	if args.mirror:
+		mirror = True
+
+	if args.magic:
+		blade_optimize = True
+		reroute = True
+		optimize = True
+		rotate180 = True
+
+	if args.width is not None:
+		HPGLinput.scaleToWidth(args.width)
+
+	if args.pen:
+		blade_optimize = False
+
+	if rotate180:
+		HPGLinput.mirrorX()
+		HPGLinput.mirrorY()
+
+	if mirror:
+		HPGLinput.mirrorX()
+
+	if optimize:
+		HPGLinput.optimize()
+		HPGLinput.fit()
+
+	if blade_optimize:
+		HPGLinput.optimizeCut(0.25)
+		HPGLinput.bladeOffset(0.25)
+
+	if reroute:
+		HPGLinput.rerouteXY()
 
 	if args.preview is not None:
-		hpgl.exportSVG(args.preview)
+		HPGLinput.exportSVG(args.preview)
 	if args.output is not None:
-		hpgl.exportHPGL(args.output)
+		HPGLinput.exportHPGL(args.output)
