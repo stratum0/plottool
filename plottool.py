@@ -124,7 +124,6 @@ splitted = HPGLdata.split(";")
 total = len(splitted)
 
 sys.stdout.write("starting...")
-port.write(";IN:;PA;")
 
 for i, command in enumerate(splitted):
 	sys.stdout.write("\rsending... {percent:.1f}% done ({done}/{total})".format(percent=(i + 1) * 100.0 / total, done=i + 1, total=total))
