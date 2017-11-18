@@ -103,36 +103,36 @@ if cont != "y":
 	exit(0)
 
 print("Using port: {}".format(args.port))
-if not os.path.exists(args.port):
-	print("The port {} does not exist.".format(args.port))
-	exit(1)
 
 HPGLdata = HPGLinput.getHPGL()
 print("{} characters loaded".format(len(HPGLdata)))
 
-port = serial.Serial(
-	port=args.port,
-	baudrate=9600,
-	parity=serial.PARITY_NONE,
-	stopbits=serial.STOPBITS_ONE,
-	bytesize=serial.EIGHTBITS,
-	rtscts=True,
-	dsrdtr=True
-)
+try:
+	port = serial.Serial(
+		port=args.port,
+		baudrate=9600,
+		parity=serial.PARITY_NONE,
+		stopbits=serial.STOPBITS_ONE,
+		bytesize=serial.EIGHTBITS,
+		rtscts=True,
+		dsrdtr=True
+	   )
 
-splitted = HPGLdata.split(";")
-total = len(splitted)
+	splitted = HPGLdata.split(";")
+	total = len(splitted)
 
-sys.stdout.write("starting...")
+	sys.stdout.write("starting...")
 
-for i, command in enumerate(splitted):
-	sys.stdout.write("\rsending... {percent:.1f}% done ({done}/{total})".format(percent=(i + 1) * 100.0 / total, done=i + 1, total=total))
-	sys.stdout.flush()
-	# ignore empty
-	if not command:
-		continue
-	port.write(command + ";")
-port.write("PU0,0;SP0;SP0;")
-sys.stdout.write("\n")
+	for i, command in enumerate(splitted):
+		sys.stdout.write("\rsending... {percent:.1f}% done ({done}/{total})".format(percent=(i + 1) * 100.0 / total, done=i + 1, total=total))
+		sys.stdout.flush()
+		# ignore empty
+		if not command:
+			continue
+		port.write(command + ";")
+	port.write("PU0,0;SP0;SP0;")
+	sys.stdout.write("\n")
+except serial.serialutil.SerialException:
+	print("Failed to open port {}.".format(args.port))
 
 __author__ = "doommaster"
