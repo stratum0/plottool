@@ -1,10 +1,14 @@
 plottool
 ========
 
-This script is intended to be used with a serial connected plotter/cutter.
+This script is intended to be used with a HPGL plotter/cutter connected over a
+serial port.
 
 It will split the file into blocks <=10kB to prevent the plotter from choking on data,
 as long as data is waiting, the tool will resume with the next part after user input.
+
+This script has been tested with a Cogi CT-630 cutting plotter @Stratum0:
+https://stratum0.org/wiki/Cogi_CT-630
 
 Dependencies
 ------------
@@ -24,5 +28,3 @@ usage is simple:
 ```./plottool file.hpgl``` will simply print the data to ```/dev/ttyUSB0```
 
 ```./plottool -p /dev/ttyUSB4 file.hpgl``` will do the same but to port ```/dev/ttyUSB4```
-
-this script has been tested with a plotter @Stratum0: https://stratum0.org/wiki/Cogi_CT-630
