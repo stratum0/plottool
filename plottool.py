@@ -129,7 +129,7 @@ try:
 		# ignore empty
 		if not command:
 			continue
-		port.write(command + ";")
+		port.write(command.encode() + b";")
 	port.write("PU0,0;SP0;SP0;")
 	sys.stdout.write("\n")
 except serial.serialutil.SerialException:
