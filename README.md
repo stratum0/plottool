@@ -16,8 +16,7 @@ Dependencies
 ------------
 
 For Debian-based Linux distributions (Ubuntu, Mint): `sudo apt-get install
-python-serial python-wxgtk-3.0 python-numpy` (Sorry, no Python 3 support until
-a Python 3-compatible release of wxPython lands in Debian.)
+python3-serial python3-wxgtk4.0 python3-numpy` (since Debian buster/testing).
 
 For Arch Linux: `sudo pacman -S python-numpy python-pyserial`, and install
 `wxpython-phoenix-git` from AUR.

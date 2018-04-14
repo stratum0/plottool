@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -10,7 +10,7 @@ try:
 except:
 	print("You need to install pyserial. "
 		"On Debian/Ubuntu try "
-		"sudo apt-get install python-serial")
+		"sudo apt-get install python3-serial")
 	exit(1)
 
 # make input python2 and python3 compatible
