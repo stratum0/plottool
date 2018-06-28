@@ -33,4 +33,4 @@ usage is simple:
 
 ```./plottool -p /dev/ttyUSB4 file.hpgl``` will do the same but to port ```/dev/ttyUSB4```
 
-Note that on macOS, tty-devices follow another naming convention. Look for something like `/dev/tty.usbserial-14430` or `/dev/cu.usbserial-14430` .  [Both should work equally](https://stackoverflow.com/q/37688257), but some users reported better results with one or the other.
+Note that on macOS, tty-devices follow another naming convention. Look for something like `/dev/tty.usbserial-14430` or `/dev/cu.usbserial-14430`. [Both should work equally](https://stackoverflow.com/q/37688257), but some users reported better results with one or the other.
