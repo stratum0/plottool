@@ -78,7 +78,7 @@ class HPGLPreview(wx.Frame):
 		self.Canvas.Canvas.ZoomToBB()
 
 		# now to stop execution start a event loop
-		self.eventLoop = wx.EventLoop()
+		self.eventLoop = wx.GUIEventLoop()
 		self.eventLoop.Run()
 		self.Destroy()
 		return self.checked
