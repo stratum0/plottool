@@ -130,7 +130,7 @@ try:
 		if not command:
 			continue
 		port.write(command.encode() + b";")
-	port.write("PU0,0;SP0;SP0;")
+	port.write(b"PU0,0;SP0;SP0;")
 	sys.stdout.write("\n")
 except serial.serialutil.SerialException:
 	print("Failed to open port {}.".format(args.port))
