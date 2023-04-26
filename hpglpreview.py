@@ -56,7 +56,7 @@ class HPGLPreview(wx.Frame):
 
 		self.Canvas.Canvas.AddRectangle((0, 0), (mm[0] + m[0], mm[1] + m[1]), LineColor="orange")
 
-		FloatCanvas.EVT_MOTION(self.Canvas.Canvas, self.OnMove)
+		self.Canvas.Canvas.Bind(wx.EVT_MOTION, self.OnMove)
 		self.Bind(wx.EVT_CLOSE, self.OnClose)
 
 	def OnOK(self, event):
@@ -67,9 +67,8 @@ class HPGLPreview(wx.Frame):
 		self.Close()
 
 	def OnMove(self, event):
-		x, y = tuple(event.Coords)
-		x *= HPGL2MM
-		y *= HPGL2MM
+		x = event.x * HPGL2MM
+		y = event.y * HPGL2MM
 		self.SetStatusText("%.2f mm, %.2f mm" % (x, y))
 
 	def OnClose(self, event):
