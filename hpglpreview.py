@@ -4,6 +4,10 @@
 import wx
 from wx.lib.floatcanvas import NavCanvas, FloatCanvas
 import hpgl
+import numpy
+
+# fix broken reference to float_ in wxPython 4.2.0
+FloatCanvas.float_ = numpy.float_
 
 HPGL2MM = hpgl.hpgl2mm(1)
 
