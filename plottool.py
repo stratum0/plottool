@@ -6,18 +6,18 @@ import os
 import argparse
 from hpgl import HPGL
 try:
-	import serial
+    import serial
 except:
-	print("You need to install pyserial. "
-		"On Debian/Ubuntu try "
-		"sudo apt-get install python3-serial")
-	exit(1)
+    print("You need to install pyserial. "
+          "On Debian/Ubuntu try "
+          "sudo apt-get install python3-serial")
+    exit(1)
 
 # make input python2 and python3 compatible
 try:
-	input = raw_input
+    input = raw_input
 except NameError:
-	pass
+    pass
 
 parser = argparse.ArgumentParser(description="Process all arguments ")
 parser.add_argument("-p", "--port", metavar="PORT", type=str, help="Serial port (default: /dev/ttyUSB0)", default="/dev/ttyUSB0")
@@ -30,11 +30,11 @@ parser.add_argument("file", type=str, help="the HPGL-file you want to plot")
 args = parser.parse_args()
 
 try:
-	HPGLinput = HPGL(args.file)
+    HPGLinput = HPGL(args.file)
 except:
-	print("no/wrong/empty file given in argument.")
-	print("")
-	raise
+    print("no/wrong/empty file given in argument.")
+    print("")
+    raise
 
 
 # do optimize stuff:
@@ -46,37 +46,37 @@ mirror = False
 margin = 5
 
 if args.mirror:
-	mirror = True
+    mirror = True
 
 if args.magic:
-	blade_optimize = True
-	reroute = True
-	optimize = True
-	rotate180 = True
+    blade_optimize = True
+    reroute = True
+    optimize = True
+    rotate180 = True
 
 if args.width is not None:
-	HPGLinput.scaleToWidth(args.width)
+    HPGLinput.scaleToWidth(args.width)
 
 if args.pen:
-	blade_optimize = False
+    blade_optimize = False
 
 if rotate180:
-	HPGLinput.mirrorX()
-	HPGLinput.mirrorY()
+    HPGLinput.mirrorX()
+    HPGLinput.mirrorY()
 
 if mirror:
-	HPGLinput.mirrorX()
+    HPGLinput.mirrorX()
 
 if optimize:
-	HPGLinput.optimize()
-	HPGLinput.fit()
+    HPGLinput.optimize()
+    HPGLinput.fit()
 
 if blade_optimize:
-	HPGLinput.optimizeCut(0.25)
-	HPGLinput.bladeOffset(0.25)
+    HPGLinput.optimizeCut(0.25)
+    HPGLinput.bladeOffset(0.25)
 
 if reroute:
-	HPGLinput.rerouteXY()
+    HPGLinput.rerouteXY()
 
 
 print("Plotting file: " + args.file)
@@ -87,20 +87,20 @@ movement = sum(HPGLinput.getLength())
 print(" -> Total movement: {:.1f} cm".format(movement / 10))
 
 try:
-	if args.preview:
-		import hpglpreview
-		import wx
-		app = wx.App(False)
-		dialog = hpglpreview.HPGLPreview(HPGLinput, dialog=True)
-		if not dialog.ShowModal():
-			exit(1)
-		cont = 'y'
-	else:
-		cont = input("continue? (y/n) ")
+    if args.preview:
+        import hpglpreview
+        import wx
+        app = wx.App(False)
+        dialog = hpglpreview.HPGLPreview(HPGLinput, dialog=True)
+        if not dialog.ShowModal():
+            exit(1)
+        cont = 'y'
+    else:
+        cont = input("continue? (y/n) ")
 except KeyboardInterrupt:
-	exit(0)
+    exit(0)
 if cont != "y":
-	exit(0)
+    exit(0)
 
 print("Using port: {}".format(args.port))
 
@@ -108,31 +108,31 @@ HPGLdata = HPGLinput.getHPGL()
 print("{} characters loaded".format(len(HPGLdata)))
 
 try:
-	port = serial.Serial(
-		port=args.port,
-		baudrate=9600,
-		parity=serial.PARITY_NONE,
-		stopbits=serial.STOPBITS_ONE,
-		bytesize=serial.EIGHTBITS,
-		rtscts=True,
-		dsrdtr=True
-	   )
+    port = serial.Serial(
+        port=args.port,
+        baudrate=9600,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        rtscts=True,
+        dsrdtr=True
+    )
 
-	splitted = HPGLdata.split(";")
-	total = len(splitted)
+    splitted = HPGLdata.split(";")
+    total = len(splitted)
 
-	sys.stdout.write("starting...")
+    sys.stdout.write("starting...")
 
-	for i, command in enumerate(splitted):
-		sys.stdout.write("\rsending... {percent:.1f}% done ({done}/{total})".format(percent=(i + 1) * 100.0 / total, done=i + 1, total=total))
-		sys.stdout.flush()
-		# ignore empty
-		if not command:
-			continue
-		port.write(command.encode() + b";")
-	port.write(b"PU0,0;SP0;SP0;")
-	sys.stdout.write("\n")
+    for i, command in enumerate(splitted):
+        sys.stdout.write("\rsending... {percent:.1f}% done ({done}/{total})".format(percent=(i + 1) * 100.0 / total, done=i + 1, total=total))
+        sys.stdout.flush()
+        # ignore empty
+        if not command:
+            continue
+        port.write(command.encode() + b";")
+    port.write(b"PU0,0;SP0;SP0;")
+    sys.stdout.write("\n")
 except serial.serialutil.SerialException:
-	print("Failed to open port {}.".format(args.port))
+    print("Failed to open port {}.".format(args.port))
 
 __author__ = "doommaster"
