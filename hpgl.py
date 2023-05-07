@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
-from __future__ import division
-from __future__ import print_function
+
 import re
 import math
+from typing import Iterable, Optional, Sequence
 
-# define xrange, to be compatible with python3 and python2
-try:
-    xrange
-except NameError:
-    xrange = range
 
 HPGL_GOTO = "PU%s,%s;"
 HPGL_CUTTO = "PD%s,%s;"
@@ -414,7 +409,7 @@ class HPGL:
         original = self.getPaths()
         min_xy, max_xy = self.getBoundingBox()
         x, y = max_xy
-        for i in xrange(m - 1):
+        for i in range(m - 1):
             self.move(x + deltaHPGL, 0)
             self.routes = original + self.routes
 
@@ -425,7 +420,7 @@ class HPGL:
         original = self.getPaths()
         min_xy, max_xy = self.getBoundingBox()
         x, y = max_xy
-        for i in xrange(m - 1):
+        for i in range(m - 1):
             self.move(0, y + deltaHPGL)
             self.routes = original + self.routes
 
@@ -483,7 +478,7 @@ class HPGL:
         min_xy, max_xy = self.getBoundingBox()
         x, y = max_xy
         _, min_y = min_xy
-        rows = [[] for i in xrange(int((y - min_y) // rowsize + 1))]
+        rows = [[] for i in range(int((y - min_y) // rowsize + 1))]
         for path in self.getPaths():
             start, stop = pathfn(path)
             x, y = start

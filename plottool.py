@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import os
 import argparse
 from hpgl import HPGL
 try:
@@ -13,11 +12,6 @@ except:
           "sudo apt-get install python3-serial")
     exit(1)
 
-# make input python2 and python3 compatible
-try:
-    input = raw_input
-except NameError:
-    pass
 
 parser = argparse.ArgumentParser(description="Process all arguments ")
 parser.add_argument("-p", "--port", metavar="PORT", type=str, help="Serial port (default: /dev/ttyUSB0)", default="/dev/ttyUSB0")
