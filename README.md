@@ -22,6 +22,17 @@ For Arch Linux: `sudo pacman -S python-numpy python-pyserial python-wxpython`.
 
 For macOS you can use `homebrew` and `pip` to install the dependencies: `pip install numpy pyserial && brew install wxpython`.
 
+With Nix (flakes enabled), no manual dependency install is needed:
+
+* `nix run . -- file.hpgl` runs plottool
+* `nix run .#hpglpreview -- file.hpgl` runs the preview viewer
+* `nix develop` gives a shell with all dependencies available
+
+You can also run it straight from GitHub without cloning:
+
+* `nix run github:stratum0/plottool -- file.hpgl`
+* `nix run github:stratum0/plottool#hpglpreview -- file.hpgl`
+
 Usage
 -----
 
